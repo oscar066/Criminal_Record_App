@@ -1,9 +1,11 @@
 package com.example.criminal_intent
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.example.criminal_intent.database.CrimeDatabase
 import java.util.UUID
+import java.util.concurrent.Executors
 
 private const val DATABASE_NAME = "crime-database"
 
@@ -16,10 +18,17 @@ class CrimeRepository private constructor(context: Context) {
     ).build()
 
     private val crimeDao = database.crimeDao()
+    private val executor = Executors.newSingleThreadExecutor() //remove before pushing
 
-    fun getCrimes(): List<Crime> = crimeDao.getCrimes()
+    fun getCrimes(): LiveData<List<Crime>> = crimeDao.getCrimes()
 
-    fun getCrime(id: UUID): Crime? = crimeDao.getCrime(id)
+    fun getCrime(id: UUID): LiveData<Crime?> = crimeDao.getCrime(id)
+
+    fun addCrime(crime: Crime){
+        executor.execute{
+            crimeDao.addCrime(crime)
+        }
+    } //remove this too
 
     companion object {
         private var INSTANCE: CrimeRepository? = null

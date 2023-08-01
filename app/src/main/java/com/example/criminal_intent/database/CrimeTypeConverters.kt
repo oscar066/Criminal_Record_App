@@ -1,8 +1,7 @@
 package com.example.criminal_intent.database
 
 import androidx.room.TypeConverter
-import java.util.Date
-import java.util.UUID
+import java.util.*
 
 class CrimeTypeConverters {
 
