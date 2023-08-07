@@ -8,8 +8,15 @@ class CrimeDetailViewModel() : ViewModel() {
     private val crimeRepository = CrimeRepository.get()
     private val crimeIdLiveData = MutableLiveData<UUID>()
 
-    var crimeLiveData: LiveData<Crime?> =
+    // fix the issue with transformation it appears it is deprecated
+    /*var crimeLiveData: LiveData<Crime?> =
         Transformations.switchMap(crimeIdLiveData) { crimeId ->
+            crimeRepository.getCrime(crimeId)
+        }*/
+
+    // Use LiveData builder's switchMap extension function
+    var crimeLiveData: LiveData<Crime?> =
+        crimeIdLiveData.switchMap { crimeId ->
             crimeRepository.getCrime(crimeId)
         }
 
@@ -17,7 +24,7 @@ class CrimeDetailViewModel() : ViewModel() {
         crimeIdLiveData.value = crimeId
     }
 
-    /*fun saveCrime(crime: Crime) {
+    fun saveCrime(crime: Crime) {
         crimeRepository.updateCrime(crime)
-    }*/
+    }
 }

@@ -16,7 +16,9 @@ import java.util.UUID
 
 private const val TAG = "CrimeFragment"
 private const val ARG_CRIME_ID = "crime_id"
+private const val DIALOG_DATE = "DialogDate"
 class CrimeFragment: Fragment() {
+
     private lateinit var crime: Crime
     private lateinit var titleField: EditText
     private lateinit var dateButton: Button
@@ -25,6 +27,7 @@ class CrimeFragment: Fragment() {
         ViewModelProvider(this).get(CrimeDetailViewModel::class.java)
     }
 
+    // Check on .getSerializable as it seems to deprecated
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         crime = Crime()
@@ -44,10 +47,6 @@ class CrimeFragment: Fragment() {
         dateButton = view.findViewById(R.id.crime_date) as Button
         solvedCheckBox = view.findViewById(R.id.crime_solved) as CheckBox
 
-        dateButton.apply{
-            text = crime.date.toString()
-            isEnabled = false
-        }
         return view
     }
 
@@ -94,12 +93,27 @@ class CrimeFragment: Fragment() {
                 crime.isSolved = isChecked
             }
         }
+        // check on the deprecated function ie the fragment manager
+        dateButton.setOnClickListener{
+            DatePickerFragment().apply{
+                show(this@CrimeFragment.requireFragmentManager(), DIALOG_DATE)
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        crimeDetailViewModel.saveCrime(crime)
     }
 
     private fun updateUI(){
         titleField.setText(crime.title)
         dateButton.text = crime.date.toString()
-        solvedCheckBox.isChecked = crime.isSolved
+        //solvedCheckBox.isChecked = crime.isSolved
+        solvedCheckBox.apply {
+            isChecked = crime.isSolved
+            jumpDrawablesToCurrentState()
+        }
     }
 
     companion object {
