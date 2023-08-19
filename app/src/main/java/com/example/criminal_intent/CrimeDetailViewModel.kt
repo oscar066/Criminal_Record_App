@@ -2,6 +2,7 @@ package com.example.criminal_intent
 
 import java.util.UUID
 import androidx.lifecycle.*
+import java.io.File
 
 class CrimeDetailViewModel() : ViewModel() {
 
@@ -26,5 +27,9 @@ class CrimeDetailViewModel() : ViewModel() {
 
     fun saveCrime(crime: Crime) {
         crimeRepository.updateCrime(crime)
+    }
+
+    fun getPhotoFile(crime: Crime): File {
+        return crimeRepository.getPhotoFile(crime)
     }
 }
